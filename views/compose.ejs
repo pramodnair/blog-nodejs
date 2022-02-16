@@ -1,15 +1,17 @@
 <%- include("partials/header") %>
-    <h2 class="text-center">Compose</h2>
+  <h2 class="text-center">Compose</h2>
+  <section>
     <form action="/compose" method="post" class="w-50 m-auto">
-        <div class="mb-3">
-          <label for="title" class="form-label"></label>
-          <input type="text"
-            class="form-control" name="title" id="title" aria-describedby="helpId" placeholder="Enter title">
-        </div>
-        <div class="mb-3">
-          <label for="content" class="form-label"></label>
-          <textarea class="form-control" name="content" id="" rows="3" placeholder="Enter content here"></textarea>
-        </div>
-        <button type="submit" class="btn btn-dark">Post</button>
+      <div class="mb-3">
+        <label for="title" class="form-label"></label>
+        <input type="text" class="form-control" name="title" id="title" aria-describedby="helpId"
+          placeholder="Enter title">
+      </div>
+      <div class="mb-3">
+        <label for="content" class="form-label"></label>
+        <textarea class="form-control" name="content" id="" rows="3" placeholder="Enter content here"></textarea>
+      </div>
+      <button type="submit" class="btn btn-dark">Post</button>
     </form>
-<%- include("partials/footer") %>
+  </section>
+  <%- include("partials/footer") %>
