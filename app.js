@@ -1,5 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+const _ = require("lodash");
 
 const app = express();
 
@@ -7,26 +9,32 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 
-const posts = [
+mongoose.connect("mongodb://localhost:27017/blogs");
+
+const postSchema = mongoose.Schema({
+  title: String,
+  content: String,
+});
+
+const Post = mongoose.model("Post", postSchema);
+
+const defaultPost = [
   {
-    title: "Day1",
+    title: "Start Blogging",
     content:
-      "Day 1 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-  },
-  {
-    title: "Day2",
-    content:
-      "Day 2 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-  },
-  {
-    title: "Day3",
-    content:
-      "Day 3 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "Welcome Blogger!! Click on compose to start your blogging journey...",
   },
 ];
 
 app.get("/", (req, res) => {
-  res.render("welcome", { posts: posts });
+  Post.find({}, (err, posts) => {
+    console.log(posts);
+    if (posts.length !== 0) {
+      res.render("welcome", { posts: posts });
+    } else {
+      res.render("welcome", { posts: defaultPost });
+    }
+  });
 });
 
 app.get("/about", (req, res) => {
@@ -42,25 +50,34 @@ app.get("/compose", (req, res) => {
 });
 
 app.post("/compose", (req, res) => {
-  const post = {
-    title: req.body.title,
-    content: req.body.content,
-  };
-  posts.push(post);
-  res.redirect("/");
+  const title = _.lowerCase(req.body.title);
+  const content = req.body.content;
+  const post = new Post({
+    title: title,
+    content: content,
+  });
+  if (!title || !content) {
+    res.redirect("/compose");
+  } else {
+    post.save();
+    res.redirect("/");
+  }
 });
 
 app.get("/posts/:title", (req, res) => {
-  const post = posts.filter((p) => {
-    if (p.title === req.params.title) {
-      return p;
+  const title = _.lowerCase(req.params.title);
+  console.log(title);
+  Post.findOne({ title: title }, (err, post) => {
+    if (post) {
+      res.render("post", { post: post });
+    } else {
+      res.render("error", { title: title });
     }
   });
-  res.render("post", { post: post[0] });
 });
 
-app.get("/:dynamic", (req, res) => {
-  res.render(req.params.dynamic);
+app.post("/posts/delete", (req, res) => {
+  console.log(req.body.params);
 });
 
 app.listen(3000, () => {

@@ -13,12 +13,18 @@
         <div class="card-body">
           <h3 class="card-title">
             <%= post.title %>
+              <button class="btn float-end" type="submit" formaction="/posts/delete" formmethod="post" name="title"
+                value="<%= post.title %>">
+                <span class="badge bg-warning">x</span>
+              </button>
           </h3>
           <p class="card-text">
-            <% if(post.content.length> 300) {%>
+            <% if(post.content.length> 300) { %>
               <%= post.content.slice(0,300) %>
                 ... <a href="/posts/<%=post.title%>">Read More</a>
-                <% } %>
+                <% } else { %>
+                  <%= post.content %>
+                    <% } %>
           </p>
         </div>
       </div>
