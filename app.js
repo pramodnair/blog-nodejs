@@ -50,7 +50,7 @@ app.get("/compose", (req, res) => {
 });
 
 app.post("/compose", (req, res) => {
-  const title = _.lowerCase(req.body.title);
+  const title = _.capitalize(req.body.title);
   const content = req.body.content;
   const post = new Post({
     title: title,
@@ -64,20 +64,50 @@ app.post("/compose", (req, res) => {
   }
 });
 
-app.get("/posts/:title", (req, res) => {
-  const title = _.lowerCase(req.params.title);
-  console.log(title);
-  Post.findOne({ title: title }, (err, post) => {
-    if (post) {
+app.get("/posts", (req, res) => {
+  const id = req.query.id;
+  Post.findById(id, (err, post) => {
+    if (!err) {
       res.render("post", { post: post });
-    } else {
-      res.render("error", { title: title });
     }
   });
 });
 
 app.post("/posts/delete", (req, res) => {
-  console.log(req.body.params);
+  console.log(req.body);
+  const id = req.body.id;
+  Post.findByIdAndDelete(id, (err) => {
+    if (!err) {
+      console.log("Successfully deleted post with title '", req.body.id, "'");
+      res.redirect("/");
+    }
+  });
+});
+
+app.get("/posts/update", (req, res) => {
+  const id = req.query.id;
+  Post.findById(id, (err, post) => {
+    if (!err) {
+      res.render("update", { post: post });
+    }
+  });
+});
+
+app.post("/posts/update", (req, res) => {
+  const id = req.body.id;
+  const post = {
+    title: req.body.title,
+    content: req.body.content,
+  };
+  Post.findById(id, (err, foundPost) => {
+    if (!err) {
+      foundPost.title = post.title;
+      foundPost.content = post.content;
+      console.log(foundPost);
+      foundPost.save();
+      res.redirect("/");
+    }
+  });
 });
 
 app.listen(3000, () => {

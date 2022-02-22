@@ -1,0 +1,16 @@
+<section>
+    <h2>Update blog with Title - <%= post.title %></h2>
+    <form action="/posts/update" method="post" class="w-50 m-auto">
+      <div class="mb-3">
+        <label for="title" class="form-label"></label>
+        <input type="text" class="form-control" name="title" id="title" aria-describedby="helpId"
+          value="<%= post.title %>">
+      </div>
+      <div class="mb-3">
+        <label for="content" class="form-label"></label>
+        <textarea class="form-control" name="content" id="" rows="5"><%= post.content %></textarea>
+      </div>
+      <input type="hidden" name="id" value="<%= post._id %>">
+      <button type="submit" class="btn btn-dark">Update</button>
+    </form>
+</section>

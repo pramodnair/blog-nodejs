@@ -1,0 +1,32 @@
+body {
+  color: #361500;
+}
+
+header {
+  background-color: #1c0a00;
+  font-family: "IBM Plex Serif", serif;
+}
+
+.welcome-text {
+  font-family: "IBM Plex Serif", serif;
+}
+
+.card-title {
+  font-family: "IBM Plex Serif", serif;
+}
+
+.card-text {
+  font-family: "Noto Sans", sans-serif;
+}
+
+.close-bg {
+  background-color: #cc9544;
+}
+
+.read-more {
+  color: #cc9544;
+}
+
+footer {
+  background-color: #361500;
+}
