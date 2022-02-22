@@ -2,6 +2,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const _ = require("lodash");
+const env = require("dotenv");
+env.config();
 
 const app = express();
 
@@ -9,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 
-mongoose.connect("mongodb://localhost:27017/blogs");
+mongoose.connect(process.env.MONGO_URI);
 
 const postSchema = mongoose.Schema({
   title: String,
@@ -110,6 +112,6 @@ app.post("/posts/update", (req, res) => {
   });
 });
 
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000, () => {
   console.log("Server up and running!");
 });
